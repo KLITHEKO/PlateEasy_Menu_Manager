@@ -67,6 +67,10 @@ The following are intentionally out of scope for this version and are reserved f
 - 2026-11-04 — Kabelo Litheko — Built out the Statistics screen: total menu items, average price, and items per course (Display Menu Statistics).
 - 2026-11-04 — Kabelo Litheko — Built out the Search screen: search by dish name and filter by course (Search and Filter Menu Items).
 - 2026-11-04 — Kabelo Litheko — Upgraded the project from Expo SDK 57 to Expo SDK 58 (React Native 0.88.1, React 19.3.0) to match the Expo Go app version.
+- 2026-11-04 — Kabelo Litheko — Made search results tappable, opening the matching item directly on the Edit screen (Search and Filter Menu Items).
+- 2026-11-04 — Kabelo Litheko — Added average price per course to the Statistics screen, alongside the overall total and average (Display Menu Statistics).
+- 2026-11-04 — Kabelo Litheko — Added a Home tab with a dashboard showing total items, average price, and shortcuts into the Menu, Search and Statistics tabs.
+- 2026-11-04 — Kabelo Litheko — Replaced the plain items-per-course list on the Statistics screen with a bar chart, so each course's share of the menu is visible at a glance.
 
 ## References
 
