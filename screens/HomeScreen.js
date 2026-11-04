@@ -10,14 +10,20 @@ export default function HomeScreen({ navigation }) {
 
   function renderItem({ item }) {
     return (
-      <View style={styles.card}>
+      // Tapping a card opens it on the Edit screen. We only pass the
+      // item's id (a plain string) through navigation, not the whole
+      // item or any functions.
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => navigation.navigate('EditItem', { itemId: item.id })}
+      >
         <View style={styles.cardTopRow}>
           <Text style={styles.dishName}>{item.name}</Text>
           <Text style={styles.price}>R{item.price}</Text>
         </View>
         <Text style={styles.description}>{item.description}</Text>
         <Text style={styles.course}>{item.course}</Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 

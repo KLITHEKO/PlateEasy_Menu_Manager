@@ -12,8 +12,21 @@ export function MenuProvider({ children }) {
     setMenuItems((currentItems) => [...currentItems, newItem]);
   }
 
+  // Replaces the item that has this id with the updated version.
+  // Every other item in the list stays exactly as it was.
+  function updateItem(updatedItem) {
+    setMenuItems((currentItems) =>
+      currentItems.map((item) => (item.id === updatedItem.id ? updatedItem : item))
+    );
+  }
+
+  // Removes the item that has this id from the list.
+  function deleteItem(id) {
+    setMenuItems((currentItems) => currentItems.filter((item) => item.id !== id));
+  }
+
   return (
-    <MenuContext.Provider value={{ menuItems, addItem }}>
+    <MenuContext.Provider value={{ menuItems, addItem, updateItem, deleteItem }}>
       {children}
     </MenuContext.Provider>
   );

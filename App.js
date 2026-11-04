@@ -9,6 +9,7 @@ import { MenuProvider } from './context/MenuContext';
 
 import HomeScreen from './screens/HomeScreen';
 import AddItemScreen from './screens/AddItemScreen';
+import EditItemScreen from './screens/EditItemScreen';
 import SearchScreen from './screens/SearchScreen';
 import StatisticsScreen from './screens/StatisticsScreen';
 
@@ -28,6 +29,7 @@ function MenuStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="AddItem" component={AddItemScreen} />
+      <Stack.Screen name="EditItem" component={EditItemScreen} />
     </Stack.Navigator>
   );
 }
