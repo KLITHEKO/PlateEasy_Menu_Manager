@@ -61,6 +61,12 @@ Improve the user experience: required fields are validated before an item is sav
 
 The following are intentionally out of scope for this version and are reserved for the Final POE: editing an existing menu item, deleting a menu item, searching or filtering the menu, and viewing statistics about the menu. The Search and Statistics tabs are visible in the app to match the navigation structure from the Part 1 wireframes, but currently only display a placeholder message stating that the feature is coming in the Final POE.
 
+## Change Log
+
+- 2026-11-04 — Kabelo Litheko — Added edit and delete functionality for menu items (Manage Menu Items).
+- 2026-11-04 — Kabelo Litheko — Built out the Statistics screen: total menu items, average price, and items per course (Display Menu Statistics).
+- 2026-11-04 — Kabelo Litheko — Built out the Search screen: search by dish name and filter by course (Search and Filter Menu Items).
+
 ## References
 
 Expo, 2026. Expo Documentation. Available at: https://docs.expo.dev [Accessed 5 September 2026].
