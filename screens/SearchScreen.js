@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Picker } from '@react-native-picker/picker';
 import { useMenu } from '../context/MenuContext';
 
-export default function SearchScreen() {
+export default function SearchScreen({ navigation }) {
   const { menuItems } = useMenu();
 
   const [searchText, setSearchText] = useState('');
@@ -32,14 +32,21 @@ export default function SearchScreen() {
 
   function renderItem({ item }) {
     return (
-      <View style={styles.card}>
+      // Tapping a result opens it on the Edit screen, same as tapping a
+      // card on the Menu tab. EditItem lives inside the Menu tab's own
+      // stack, so we navigate across tabs by naming the tab first, then
+      // the screen inside it, same pattern used from the Home screen.
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => navigation.navigate('Menu', { screen: 'EditItem', params: { itemId: item.id } })}
+      >
         <View style={styles.cardTopRow}>
           <Text style={styles.dishName}>{item.name}</Text>
           <Text style={styles.price}>R{item.price}</Text>
         </View>
         <Text style={styles.description}>{item.description}</Text>
         <Text style={styles.course}>{item.course}</Text>
-      </View>
+      </TouchableOpacity>
     );
   }
 
