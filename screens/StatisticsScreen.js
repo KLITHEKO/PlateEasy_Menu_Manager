@@ -18,11 +18,16 @@ export default function StatisticsScreen() {
   const totalPrice = menuItems.reduce((sum, item) => sum + item.price, 0);
   const averagePrice = totalItems > 0 ? totalPrice / totalItems : 0;
 
-  // For each course, count how many menu items belong to it.
-  const countsByCourse = COURSES.map((course) => ({
-    course,
-    count: menuItems.filter((item) => item.course === course).length,
-  }));
+  // For each course, work out how many items belong to it and the
+  // average price of just those items. Same zero-item guard as above,
+  // so a course with nothing in it yet shows a dash instead of NaN.
+  const statsByCourse = COURSES.map((course) => {
+    const itemsInCourse = menuItems.filter((item) => item.course === course);
+    const courseCount = itemsInCourse.length;
+    const courseTotal = itemsInCourse.reduce((sum, item) => sum + item.price, 0);
+    const courseAverage = courseCount > 0 ? courseTotal / courseCount : 0;
+    return { course, count: courseCount, averagePrice: courseAverage };
+  });
 
   if (totalItems === 0) {
     return (
@@ -50,11 +55,18 @@ export default function StatisticsScreen() {
       </View>
 
       <View style={styles.statCard}>
-        <Text style={styles.statLabel}>Items Per Course</Text>
-        {countsByCourse.map(({ course, count }) => (
+        <Text style={styles.statLabel}>Items and Average Price Per Course</Text>
+        {statsByCourse.map(({ course, count, averagePrice: courseAverage }) => (
           <View style={styles.courseRow} key={course}>
             <Text style={styles.courseName}>{course}</Text>
-            <Text style={styles.courseCount}>{count}</Text>
+            <View style={styles.courseStatsRight}>
+              <Text style={styles.courseCount}>
+                {count} {count === 1 ? 'item' : 'items'}
+              </Text>
+              <Text style={styles.courseAverage}>
+                {count > 0 ? `avg R${courseAverage.toFixed(2)}` : 'No items yet'}
+              </Text>
+            </View>
           </View>
         ))}
       </View>
@@ -102,15 +114,24 @@ const styles = StyleSheet.create({
   courseRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 6,
+    alignItems: 'center',
+    paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
   courseName: {
     fontSize: 15,
   },
+  courseStatsRight: {
+    alignItems: 'flex-end',
+  },
   courseCount: {
     fontSize: 15,
     fontWeight: 'bold',
+  },
+  courseAverage: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 2,
   },
 });
