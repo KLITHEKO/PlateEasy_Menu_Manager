@@ -56,19 +56,30 @@ export default function StatisticsScreen() {
 
       <View style={styles.statCard}>
         <Text style={styles.statLabel}>Items and Average Price Per Course</Text>
-        {statsByCourse.map(({ course, count, averagePrice: courseAverage }) => (
-          <View style={styles.courseRow} key={course}>
-            <Text style={styles.courseName}>{course}</Text>
-            <View style={styles.courseStatsRight}>
-              <Text style={styles.courseCount}>
-                {count} {count === 1 ? 'item' : 'items'}
-              </Text>
+        {/* Each course's bar is sized relative to whichever course has the
+            most items, so the busiest course always fills the full width
+            and the others show proportionally — a quick visual read of
+            which parts of the menu are biggest, not just a list of numbers. */}
+        {statsByCourse.map(({ course, count, averagePrice: courseAverage }) => {
+          const maxCount = Math.max(...statsByCourse.map((s) => s.count), 1);
+          const barWidth = `${(count / maxCount) * 100}%`;
+          return (
+            <View style={styles.courseRow} key={course}>
+              <View style={styles.courseRowTop}>
+                <Text style={styles.courseName}>{course}</Text>
+                <Text style={styles.courseCount}>
+                  {count} {count === 1 ? 'item' : 'items'}
+                </Text>
+              </View>
+              <View style={styles.barTrack}>
+                <View style={[styles.barFill, { width: barWidth }]} />
+              </View>
               <Text style={styles.courseAverage}>
                 {count > 0 ? `avg R${courseAverage.toFixed(2)}` : 'No items yet'}
               </Text>
             </View>
-          </View>
-        ))}
+          );
+        })}
       </View>
     </SafeAreaView>
   );
@@ -112,26 +123,37 @@ const styles = StyleSheet.create({
     color: '#B8631F',
   },
   courseRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
+  courseRowTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
   courseName: {
     fontSize: 15,
-  },
-  courseStatsRight: {
-    alignItems: 'flex-end',
   },
   courseCount: {
     fontSize: 15,
     fontWeight: 'bold',
   },
+  barTrack: {
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#f0eee8',
+    overflow: 'hidden',
+  },
+  barFill: {
+    height: '100%',
+    borderRadius: 4,
+    backgroundColor: '#D9782D',
+  },
   courseAverage: {
     fontSize: 12,
     color: '#666',
-    marginTop: 2,
+    marginTop: 4,
   },
 });
