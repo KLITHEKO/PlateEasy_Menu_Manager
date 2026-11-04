@@ -1,13 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { MaterialIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useMenu } from '../context/MenuContext';
 
-// The Home tab. Unlike the Menu tab (which jumps straight into the list of
-// dishes), this is a small dashboard: a greeting, the two headline numbers
-// a chef cares about at a glance, a button into the menu, and shortcuts
-// into Search and Statistics so every tab is reachable from here too.
+// The Home tab. Laid out to match the Home screen mockup: a logo row, a
+// greeting with a one-line subtitle, two headline-number boxes side by
+// side, a button into the menu, and two shortcut cards into Search and
+// Statistics. Everything is centred as a group in the space below the
+// logo row, same as the mockup.
 export default function DashboardScreen({ navigation }) {
   const { menuItems } = useMenu();
 
@@ -17,27 +18,25 @@ export default function DashboardScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.logoBadge}>
-          <Text style={styles.logoText}>PE</Text>
+      <View style={styles.content}>
+        <View style={styles.logoRow}>
+          <View style={styles.logoBadge}>
+            <Text style={styles.logoText}>PE</Text>
+          </View>
+          <Text style={styles.appName}>PlateEasy</Text>
         </View>
-        <Text style={styles.appName}>PlateEasy</Text>
-      </View>
 
-      {/* Everything below is centred as a group, both horizontally and in
-          the remaining vertical space, rather than stacked from the top. */}
-      <View style={styles.centeredContent}>
         <Text style={styles.greeting}>Welcome back, Chef!</Text>
+        <Text style={styles.subtitle}>Here's a quick look at your menu.</Text>
 
         <View style={styles.statRow}>
-          <View style={styles.statBox}>
+          <View style={styles.statMini}>
+            <Text style={styles.statLabel}>TOTAL ITEMS</Text>
             <Text style={styles.statValue}>{totalItems}</Text>
-            <Text style={styles.statLabel}>Total Items</Text>
           </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statBox}>
+          <View style={styles.statMini}>
+            <Text style={styles.statLabel}>AVG PRICE</Text>
             <Text style={styles.statValue}>R{averagePrice.toFixed(2)}</Text>
-            <Text style={styles.statLabel}>Avg Price</Text>
           </View>
         </View>
 
@@ -53,14 +52,14 @@ export default function DashboardScreen({ navigation }) {
             style={styles.quickLink}
             onPress={() => navigation.navigate('Search')}
           >
-            <MaterialIcons name="search" size={22} color="#4C3FA0" />
+            <Ionicons name="search" size={20} color="#444" style={styles.quickLinkIcon} />
             <Text style={styles.quickLinkText}>Search Menu</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.quickLink}
             onPress={() => navigation.navigate('Statistics')}
           >
-            <MaterialIcons name="bar-chart" size={22} color="#4C3FA0" />
+            <Ionicons name="stats-chart" size={20} color="#444" style={styles.quickLinkIcon} />
             <Text style={styles.quickLinkText}>View Stats</Text>
           </TouchableOpacity>
         </View>
@@ -73,16 +72,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F7F4EF',
-    padding: 20,
   },
-  header: {
+  // The whole block is centred as a group in the available space, same as
+  // the mockup's #screen-home .content, rather than pinned to the top.
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 18,
+    paddingVertical: 20,
+  },
+  logoRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 6,
   },
   logoBadge: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
+    width: 40,
+    height: 40,
+    borderRadius: 12,
     backgroundColor: '#D9782D',
     justifyContent: 'center',
     alignItems: 'center',
@@ -91,65 +99,57 @@ const styles = StyleSheet.create({
   logoText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 18,
   },
   appName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  // This View takes up all the leftover vertical space below the header
-  // and centers its children inside that space, both vertically and
-  // horizontally, instead of leaving everything pinned to the top.
-  centeredContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  greeting: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 24,
-    textAlign: 'center',
-  },
-  statRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderRadius: 14,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    paddingVertical: 18,
-    paddingHorizontal: 28,
-    marginBottom: 28,
-  },
-  statBox: {
-    alignItems: 'center',
-    minWidth: 90,
-  },
-  statDivider: {
-    width: 1,
-    height: 36,
-    backgroundColor: '#e0e0e0',
-    marginHorizontal: 20,
-  },
-  statValue: {
-    fontSize: 24,
+    fontSize: 15,
     fontWeight: 'bold',
     color: '#B8631F',
   },
-  statLabel: {
-    fontSize: 12,
+  greeting: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#222',
+    textAlign: 'center',
+    marginTop: 18,
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
     color: '#666',
-    marginTop: 4,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  statRow: {
+    flexDirection: 'row',
+    marginBottom: 22,
+  },
+  statMini: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 12,
+    padding: 14,
+    marginHorizontal: 5,
+  },
+  statLabel: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#4C3FA0',
+    marginBottom: 4,
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#B8631F',
   },
   ctaButton: {
     backgroundColor: '#D9782D',
-    paddingVertical: 14,
-    paddingHorizontal: 32,
+    alignItems: 'center',
+    paddingVertical: 15,
     borderRadius: 10,
-    marginBottom: 24,
+    marginBottom: 20,
   },
   ctaButtonText: {
     color: '#fff',
@@ -160,13 +160,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   quickLink: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
     alignItems: 'center',
-    marginHorizontal: 18,
+    marginHorizontal: 5,
+  },
+  quickLinkIcon: {
+    marginBottom: 6,
   },
   quickLinkText: {
-    marginTop: 6,
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#4C3FA0',
+    color: '#444',
   },
 });
