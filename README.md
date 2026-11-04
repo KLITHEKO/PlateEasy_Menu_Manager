@@ -25,8 +25,8 @@ Navigation between the Home screen and the Add Item screen, as well as the botto
 
 ## Technology Stack
 
-Expo SDK 57 (Expo, 2026)
-React 19.2.3 and React Native 0.86.3 (Meta Platforms, Inc., 2026)
+Expo SDK 58 (Expo, 2026)
+React 19.3.0 and React Native 0.88.1 (Meta Platforms, Inc., 2026)
 React Navigation, used for the tab bar and stack navigation (React Navigation, 2026)
 React Native Picker, used for the course selection field (React Native Community, 2026)
 React Native Safe Area Context, used to correctly handle device safe areas (React Native Community, 2026)
@@ -66,6 +66,7 @@ The following are intentionally out of scope for this version and are reserved f
 - 2026-11-04 — Kabelo Litheko — Added edit and delete functionality for menu items (Manage Menu Items).
 - 2026-11-04 — Kabelo Litheko — Built out the Statistics screen: total menu items, average price, and items per course (Display Menu Statistics).
 - 2026-11-04 — Kabelo Litheko — Built out the Search screen: search by dish name and filter by course (Search and Filter Menu Items).
+- 2026-11-04 — Kabelo Litheko — Upgraded the project from Expo SDK 57 to Expo SDK 58 (React Native 0.88.1, React 19.3.0) to match the Expo Go app version.
 
 ## References
 
