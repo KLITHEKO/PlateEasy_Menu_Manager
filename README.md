@@ -9,23 +9,26 @@ Assessment: Portfolio of Evidence (POE), Final POE
 
 ## Overview
 
-PlateEasy is a mobile application built using React Native (Meta Platforms, Inc., 2026) and the Expo framework (Expo, 2026), developed for the Chef's Menu Manager brief. This version of the app (the Final POE) lets a chef add, edit and delete menu items; view the full menu with no manual refresh needed; search and filter the menu by dish name and course; and view statistics about the menu (totals, averages, the most and least expensive dish, and a per-course breakdown), with input validation and clear feedback throughout.
+PlateEasy is a mobile application developed using React Native (Meta Platforms, Inc., 2026) and the Expo framework (Expo, 2026) in response to the Chef's Menu Manager brief. The application allows the chef to add, edit and delete menu items, view the menu with automatic updates, and search and filter dishes by name or course. It also provides menu statistics, including item totals, average prices, the most and least expensive dishes, and a breakdown by course. Input validation and clear feedback are incorporated throughout the application to support a consistent and user-friendly experience.
 
 ## Features
+PlateEasy is a mobile application developed using React Native (Meta Platforms, Inc., 2026) and the Expo framework (Expo, 2026) in response to the Chef's Menu Manager brief. The application allows the chef to add, edit and delete menu items, view the menu with automatic updates, and search and filter dishes by name or course. It also provides menu statistics, including item totals, average prices, the most and least expensive dishes, and a breakdown by course. Input validation and clear feedback are incorporated throughout the application to support a consistent and user-friendly experience.
 
-PlateEasy supports the full menu management workflow a chef needs, from building the menu to reviewing it. The interface is built from React Native components (Meta Platforms, Inc., 2026), with a clear title, readable text, consistent spacing and alignment, and a layout based on the Part 1 wireframes.
+### Application Features and Interface
 
-Adding a dish captures its name, description, course and price, each through an input suited to that type of data. Every dish added appears in the list immediately, with no need to manually refresh the screen.
+PlateEasy supports the complete menu management workflow, from creating and organising dishes to reviewing the menu. The interface is built using React Native components (Meta Platforms, Inc., 2026), with a clear application title, readable text, consistent spacing and alignment. The overall layout follows the structure and design direction of the Part 1 wireframes, with adjustments made during development to improve the user experience and accommodate the implemented features.
 
-Any existing dish can be opened from the Menu tab and edited with the same validation as adding a new one, or deleted after a confirmation prompt, so a mistake can be corrected without starting over.
+When adding a dish, the chef enters its name, description, course and price using an appropriate input for each type of information. Newly added dishes appear in the menu immediately, without requiring a manual refresh.
 
-The Search tab finds dishes by name and narrows them down by course, and tapping a result opens it directly on the Edit screen.
+Existing dishes can be selected from the Menu tab and edited using the same validation applied when adding a new dish. Dishes can also be deleted after a confirmation prompt, allowing mistakes to be corrected without having to recreate the entire menu item.
 
-The Statistics tab shows the total number of items, the average price across the whole menu, the most and least expensive dish, and a bar chart of how many items — and their average price — belong to each course.
+The Search tab allows dishes to be located by name and filtered by course. Selecting a search result opens the corresponding dish directly on the Edit screen.
 
-Required fields are validated before a dish is saved, with a specific error message for whatever field is wrong, a confirmation message after every add, update or delete, and a message on the Home screen when the menu is empty.
+The Statistics tab provides an overview of the menu, including the total number of items, average menu price, most and least expensive dishes, and a bar chart showing the number of items and average price for each course.
 
-Navigation between the Home, Menu, Search and Statistics tabs, and the Add Item and Edit Item screens nested within the Menu tab, uses React Navigation (React Navigation, 2026).
+Required fields are validated before a dish can be saved. Specific error messages identify fields that need attention, while confirmation messages appear after successful additions, updates and deletions. The Home screen also displays an informative message when the menu is empty.
+
+Navigation between the Home, Menu, Search and Statistics tabs, as well as the Add Item and Edit Item screens nested within the Menu tab, is managed using React Navigation (React Navigation, 2026). This structure allows the chef to move between the main sections of the application while accessing menu management screens within the Menu tab.
 
 ## Technology Stack
 
@@ -38,11 +41,13 @@ Expo Font, used to load DM Sans and Source Sans 3 locally for consistent cross-p
 
 ## Design System
 
-The app's colour palette, typography, spacing and corner-radius values are centralised in `constants/theme.js` as a single source of truth, rather than each screen hard-coding its own values. The palette is deliberately restricted to five colours — Black, Carrot Orange, Dim Grey, White and Cornflower Ocean — each limited to exactly one functional role (for example, Carrot Orange is used only for Add/Save actions, and Cornflower Ocean only for navigation and selected states), following the general UI colour theory principle that a small, purposeful palette with a clear 60-30-10 distribution across background, secondary and accent colours reads as more deliberate and readable than one colour used inconsistently for several different purposes (freeCodeCamp, 2026).
+The app's colour palette, typography, spacing and corner-radius values are centralised in `constants/theme.js`, providing a single source of truth for the design system. This avoids individual screens defining their own values and helps maintain a consistent appearance throughout the app.
 
-Typography uses DM Sans for screen titles and section headings and Source Sans 3 for all other text (dish names, prices, buttons and labels), both loaded as local font files via Expo Font rather than relying on the operating system's default typeface, so the brand typography is identical on iOS and Android (Google, 2026a; Google, 2026c).
+The colour palette is restricted to five colours: Black, Carrot Orange, Dim Grey, White and Cornflower Ocean. Each colour has a defined functional role. For example, Carrot Orange is reserved for Add and Save actions, while Cornflower Ocean is used for navigation and selected states. This follows the UI design principle of using a limited, purposeful colour palette to create a clear visual hierarchy and improve readability (freeCodeCamp, 2026).
 
-Touch target sizing (a 52px minimum button height), spacing and the use of shadow versus Android elevation for card surfaces were checked against the touch-target and layout guidance in Apple's Human Interface Guidelines (Apple Inc., 2026) and Google's Material Design 3 (Google, 2026b), and colour contrast between text and its background was checked against the Web Content Accessibility Guidelines (W3C, 2026) minimum contrast ratios.
+Typography uses DM Sans for screen titles and section headings, while Source Sans 3 is used for other interface text, including dish names, prices, buttons and labels. Both typefaces are loaded locally using Expo Font rather than relying on system defaults, helping maintain consistent typography across iOS and Android (Google, 2026a; Google, 2026c).
+
+The design also uses a minimum button height of 52px, consistent spacing and platform-appropriate card shadows. These choices were considered against Apple's Human Interface Guidelines (Apple Inc., 2026) and Google's Material Design 3 guidance (Google, 2026b). Text and background colour combinations were also checked against the minimum contrast requirements in the Web Content Accessibility Guidelines (W3C, 2026).
 
 ## Project Structure
 
@@ -65,26 +70,36 @@ Open the Expo Go app on a physical device and scan the QR code shown in the term
 
 ## Change Log
 
-- 2026-11-04 — Kabelo Litheko — Added edit and delete functionality for menu items (Manage Menu Items).
-- 2026-11-04 — Kabelo Litheko — Built out the Statistics screen: total menu items, average price, and items per course (Display Menu Statistics).
-- 2026-11-04 — Kabelo Litheko — Built out the Search screen: search by dish name and filter by course (Search and Filter Menu Items).
-- 2026-11-04 — Kabelo Litheko — Upgraded the project from Expo SDK 57 to Expo SDK 58 (React Native 0.88.1, React 19.3.0) to match the Expo Go app version.
-- 2026-11-04 — Kabelo Litheko — Made search results tappable, opening the matching item directly on the Edit screen (Search and Filter Menu Items).
-- 2026-11-04 — Kabelo Litheko — Added average price per course to the Statistics screen, alongside the overall total and average (Display Menu Statistics).
-- 2026-11-04 — Kabelo Litheko — Added a Home tab with a dashboard showing total items, average price, and shortcuts into the Menu, Search and Statistics tabs.
-- 2026-11-04 — Kabelo Litheko — Replaced the plain items-per-course list on the Statistics screen with a bar chart, so each course's share of the menu is visible at a glance.
-- 2026-11-05 — Kabelo Litheko — Added a splash screen using the app's real logo mark instead of the default Expo splash.
-- 2026-11-05 — Kabelo Litheko — Added a "Most / Least Expensive Dish" card to the Statistics screen.
-- 2026-11-06 — Kabelo Litheko — Finalised the app's colour palette and typography as a documented design system in constants/theme.js, informed by UI colour theory, the 60-30-10 distribution guideline (freeCodeCamp, 2026), WCAG 2.2 contrast guidance (W3C, 2026), and platform touch-target conventions from Apple's Human Interface Guidelines (Apple Inc., 2026) and Google's Material Design 3 (Google, 2026b).
-- 2026-11-06 — Kabelo Litheko — Loaded DM Sans and Source Sans 3 locally via Expo Font for consistent typography across iOS and Android (Google, 2026a; Google, 2026c), replacing the operating system's default font.
-- 2026-11-06 — Kabelo Litheko — Rebuilt the Home screen to show item counts per course instead of duplicating the totals already shown on Statistics, and replaced the Search/Stats shortcut buttons with a single "Add New Dish" shortcut that wasn't available anywhere else in the app.
-- 2026-11-06 — Kabelo Litheko — Replaced the Picker-based course selector on the Add, Edit and Search screens with a reusable ChipSelector component, and removed the now-unused React Native Picker dependency.
-- 2026-11-06 — Kabelo Litheko — Extracted AppButton and DishCard as reusable components used across the Home, Menu and Search screens, reducing duplicated button and list-row styling code.
-- 2026-11-06 — Kabelo Litheko — Added light/dark mode, following the phone's system appearance automatically via React Native's useColorScheme() (Meta Platforms, Inc., 2026) — no in-app toggle. Added a dark palette to constants/theme.js and a shared useAppTheme hook, and converted every screen and shared component from static to theme-reactive styling.
-- 2026-11-06 — Kabelo Litheko — Added a per-course colour (a tonal grey, not a new hue) shown as a small dot on dish cards, the course/filter chips, the Home course-coverage cards, and the Statistics bar chart, so the three courses are distinguishable at a glance in both light and dark mode.
-- 2026-11-06 — Kabelo Litheko — Centred the Home screen's greeting and subtitle, and the logo row above them.
-- 2026-11-06 — Kabelo Litheko — Added a fade transition when the splash screen hides, instead of it disappearing instantly.
-- 2026-11-06 — Kabelo Litheko — Replaced the tonal-grey per-course colour with three independent, contrast-checked hues — Chartreuse for Starter, Teal for Main Course and Magenta for Dessert — substituting a separate light-mode or dark-mode value wherever the chosen hex fell below a readable contrast ratio against that mode's card surface (WCAG 2.2; W3C, 2026).
+## Development History
+
+### 4 November 2026
+
+- **Menu management:** Added the ability to edit and delete existing menu items (Manage Menu Items).
+- **Statistics:** Created the Statistics screen to display total menu items, average price and item counts per course (Display Menu Statistics).
+- **Search and filtering:** Added dish-name search and course filtering (Search and Filter Menu Items).
+- **Project upgrade:** Upgraded from Expo SDK 57 to Expo SDK 58, using React Native 0.88.1 and React 19.3.0 to match the installed Expo Go version.
+- **Search navigation:** Made search results selectable, opening the corresponding dish directly on the Edit screen.
+- **Course statistics:** Added average price per course to the Statistics screen.
+- **Home dashboard:** Added a Home tab with a dashboard showing menu information and shortcuts to the Menu, Search and Statistics tabs.
+- **Statistics chart:** Replaced the items-per-course list with a bar chart for a clearer visual comparison.
+
+### 5 November 2026
+
+- **Splash screen:** Added a custom splash screen using the app's logo instead of the default Expo splash.
+- **Price overview:** Added a Most / Least Expensive Dish card to the Statistics screen.
+
+### 6 November 2026
+
+- **Design system:** Finalised and documented the app's colour palette, typography, spacing and component styling in `constants/theme.js`. Design decisions were informed by colour theory, WCAG 2.2 contrast guidance and platform design conventions (freeCodeCamp, 2026; W3C, 2026; Apple Inc., 2026; Google, 2026b).
+- **Typography:** Added local DM Sans and Source Sans 3 font files using Expo Font for consistent typography across iOS and Android (Google, 2026a; Google, 2026c).
+- **Home dashboard update:** Reworked the Home screen to show item counts per course instead of repeating the totals available on the Statistics screen. Replaced the Search and Statistics shortcuts with an Add New Dish shortcut.
+- **Course selection:** Replaced the Picker controls on the Add, Edit and Search screens with a reusable `ChipSelector` component and removed the unused React Native Picker dependency.
+- **Reusable components:** Extracted `AppButton` and `DishCard` into shared components for use across the Home, Menu and Search screens, reducing duplicated styling and code.
+- **Light and dark mode:** Added automatic light and dark mode based on the device's system appearance using React Native's `useColorScheme()` (Meta Platforms, Inc., 2026). Added a dark colour palette and shared `useAppTheme` hook in `constants/theme.js`, then updated all screens and shared components to respond to the active theme.
+- **Course indicators:** Added colour indicators to distinguish Starter, Main Course and Dessert across dish cards, selection chips, Home course-coverage cards and the Statistics chart.
+- **Home screen layout:** Centred the greeting, subtitle and logo row for a more balanced layout.
+- **Splash transition:** Added a fade transition when the splash screen closes.
+- **Course colour refinement:** Replaced the initial tonal-grey course indicators with three distinct colours: Chartreuse for Starter, Teal for Main Course and Magenta for Dessert. Added separate light-mode and dark-mode colour values where needed to maintain readable contrast against card surfaces, following WCAG 2.2 guidance (W3C, 2026).
 
 ## References
 
