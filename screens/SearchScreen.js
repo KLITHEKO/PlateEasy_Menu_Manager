@@ -1,11 +1,26 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Picker } from '@react-native-picker/picker';
+import { Ionicons } from '@expo/vector-icons';
 import { useMenu } from '../context/MenuContext';
+import { RADIUS, SPACING, COURSES, FONTS } from '../constants/theme';
+import useAppTheme from '../hooks/useAppTheme';
+import ChipSelector from '../components/ChipSelector';
+import DishCard from '../components/DishCard';
+
+// '' means "all courses" — included as its own chip (no course dot, since
+// it doesn't represent a single course) so the filter row always has
+// something selected, same pattern as the course selector on the
+// Add/Edit forms.
+const FILTER_OPTIONS = [
+  { label: 'All', value: '' },
+  ...COURSES.map((course) => ({ label: course, value: course, course })),
+];
 
 export default function SearchScreen({ navigation }) {
   const { menuItems } = useMenu();
+  const { colors, type } = useAppTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const [searchText, setSearchText] = useState('');
   const [courseFilter, setCourseFilter] = useState(''); // '' means "all courses"
@@ -36,17 +51,12 @@ export default function SearchScreen({ navigation }) {
       // card on the Menu tab. EditItem lives inside the Menu tab's own
       // stack, so we navigate across tabs by naming the tab first, then
       // the screen inside it, same pattern used from the Home screen.
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => navigation.navigate('Menu', { screen: 'EditItem', params: { itemId: item.id } })}
-      >
-        <View style={styles.cardTopRow}>
-          <Text style={styles.dishName}>{item.name}</Text>
-          <Text style={styles.price}>R{item.price}</Text>
-        </View>
-        <Text style={styles.description}>{item.description}</Text>
-        <Text style={styles.course}>{item.course}</Text>
-      </TouchableOpacity>
+      <DishCard
+        item={item}
+        onPress={() =>
+          navigation.navigate('Menu', { screen: 'EditItem', params: { itemId: item.id } })
+        }
+      />
     );
   }
 
@@ -54,22 +64,21 @@ export default function SearchScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Search Menu</Text>
+      <Text style={[type.screenTitle, styles.title]}>Search Menu</Text>
 
-      <TextInput
-        style={styles.input}
-        value={searchText}
-        onChangeText={setSearchText}
-        placeholder="Search by dish name"
-      />
+      <View style={styles.searchBox}>
+        <Ionicons name="search" size={17} color={colors.textSecondary} />
+        <TextInput
+          style={styles.searchInput}
+          value={searchText}
+          onChangeText={setSearchText}
+          placeholder="Search dishes..."
+          placeholderTextColor={colors.placeholder}
+        />
+      </View>
 
-      <View style={styles.pickerBox}>
-        <Picker selectedValue={courseFilter} onValueChange={(value) => setCourseFilter(value)}>
-          <Picker.Item label="All Courses" value="" />
-          <Picker.Item label="Starter" value="Starter" />
-          <Picker.Item label="Main Course" value="Main Course" />
-          <Picker.Item label="Dessert" value="Dessert" />
-        </Picker>
+      <View style={styles.filterWrapper}>
+        <ChipSelector options={FILTER_OPTIONS} value={courseFilter} onChange={setCourseFilter} />
       </View>
 
       {hasActiveSearch && (
@@ -84,7 +93,7 @@ export default function SearchScreen({ navigation }) {
         renderItem={renderItem}
         contentContainerStyle={{ paddingBottom: 40 }}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>
+          <Text style={[type.bodyGrey, styles.emptyText]}>
             {menuItems.length === 0
               ? 'No menu items yet. Add a dish from the Menu tab first.'
               : 'No menu items match your search.'}
@@ -95,79 +104,50 @@ export default function SearchScreen({ navigation }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F7F4EF',
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#D9782D',
-    marginBottom: 12,
-  },
-  input: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 6,
-    padding: 10,
-    fontSize: 15,
-    marginBottom: 10,
-  },
-  pickerBox: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 6,
-    marginBottom: 10,
-  },
-  clearButton: {
-    alignSelf: 'flex-start',
-    marginBottom: 14,
-  },
-  clearButtonText: {
-    color: '#4C3FA0',
-    fontWeight: 'bold',
-    fontSize: 13,
-  },
-  emptyText: {
-    marginTop: 40,
-    textAlign: 'center',
-    fontSize: 15,
-    color: '#666',
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    padding: 14,
-    marginBottom: 10,
-  },
-  cardTopRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  dishName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#B8631F',
-  },
-  description: {
-    fontSize: 14,
-    color: '#555',
-    marginTop: 4,
-  },
-  course: {
-    marginTop: 6,
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#4C3FA0',
-  },
-});
+function createStyles(colors) {
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: colors.background,
+      paddingHorizontal: SPACING.lg,
+      paddingTop: SPACING.xl,
+    },
+    title: {
+      marginBottom: SPACING.lg,
+    },
+    searchBox: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 8,
+      backgroundColor: colors.surface,
+      borderWidth: 1,
+      borderColor: colors.border,
+      borderRadius: RADIUS,
+      paddingHorizontal: 14,
+      marginBottom: SPACING.sm,
+    },
+    searchInput: {
+      flex: 1,
+      paddingVertical: 13,
+      fontFamily: FONTS.body,
+      fontSize: 14,
+      color: colors.textPrimary,
+    },
+    filterWrapper: {
+      marginBottom: SPACING.sm,
+    },
+    clearButton: {
+      alignSelf: 'flex-start',
+      marginBottom: SPACING.md,
+    },
+    clearButtonText: {
+      fontFamily: FONTS.bodyMedium,
+      fontSize: 13,
+      color: colors.blue,
+    },
+    emptyText: {
+      marginTop: 40,
+      textAlign: 'center',
+    },
+  });
+}
