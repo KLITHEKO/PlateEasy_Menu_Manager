@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useMenu } from '../context/MenuContext';
@@ -21,7 +21,14 @@ export default function DashboardScreen({ navigation }) {
       <View style={styles.content}>
         <View style={styles.logoRow}>
           <View style={styles.logoBadge}>
-            <Text style={styles.logoText}>PE</Text>
+            {/* The app's real logo mark (the pan-and-flame glyph cropped
+                out of assets/icon.png — the same icon used for the app's
+                home-screen icon), not a text placeholder. */}
+            <Image
+              source={require('../assets/logo-mark.png')}
+              style={styles.logoImage}
+              resizeMode="contain"
+            />
           </View>
           <Text style={styles.appName}>PlateEasy</Text>
         </View>
@@ -96,10 +103,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 10,
   },
-  logoText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 18,
+  logoImage: {
+    width: 24,
+    height: 17,
   },
   appName: {
     fontSize: 15,
