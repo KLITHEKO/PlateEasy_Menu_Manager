@@ -1,6 +1,10 @@
-# PlateEasy (Menu Manager)
+# PlateEasy
 
-## Student Details
+### Restaurant Menu Management
+
+A mobile app for managing a restaurant's menu.
+
+**Student Details**
 
 Name: Kabelo Litheko
 Student Number: ST10517550
@@ -9,81 +13,196 @@ Assessment: Portfolio of Evidence (POE), Final POE
 
 ## Overview
 
-PlateEasy is a mobile application built using React Native (Meta Platforms, Inc., 2026) and the Expo framework (Expo, 2026), developed for the Chef's Menu Manager brief. This version of the app (the Final POE) lets a chef add, edit and delete menu items; view the full menu with no manual refresh needed; search and filter the menu by dish name and course; and view statistics about the menu (totals, averages, the most and least expensive dish, and a per-course breakdown), with input validation and clear feedback throughout.
+PlateEasy is a React Native app built with Expo. It helps chefs manage a menu from a phone instead of a notebook or spreadsheet. A chef can add, edit, delete, search and review menu items directly in the app.
 
-## Features
+The app has four tabs: Home, Menu, Search and Statistics. Home shows a quick summary of the menu. Menu holds the full list of dishes, plus the forms for adding and editing one. Search finds dishes by name or course. Statistics shows totals, averages and a breakdown by course.
 
-Build the user interface: a clear application title, appropriate React Native components (Meta Platforms, Inc., 2026), readable text, consistent spacing and alignment, and a simple layout based on the Part 1 wireframes.
+## Key Features
 
-Capture menu information: dish name, description, course and price are each captured using an appropriate input component from the React Native core component library (Meta Platforms, Inc., 2026).
+**Dashboard.** Shows how many dishes are in each course, with shortcuts to manage the menu or add a new dish.
 
-Display menu items: multiple menu items can be added, all added items are displayed, and the list updates automatically whenever a new item is added, with no manual refresh needed.
+**Menu Management (CRUD).** Add, view, edit and delete dishes. Each dish has a name, description, course and price. The list updates instantly, with no manual refresh.
 
-Manage menu items: any existing item can be opened from the Menu tab, edited with the same validation as adding a new item, or deleted after a confirmation prompt, so mistakes can be corrected without re-entering an entire dish.
+**Search and Filtering.** Search by dish name and filter by course at the same time. Tapping a result opens it on the Edit screen.
 
-Search and filter the menu: the chef can search by dish name and filter by course from the Search tab, and tapping a result opens it directly on the Edit screen.
+**Menu Statistics.** Shows the total number of dishes, the average price, the most and least expensive dish, and a bar chart of dishes per course.
 
-View menu statistics: the Statistics tab shows the total number of items, the average price, the most and least expensive dish, and a bar chart of items per course with each course's own average price.
+**Input Validation and User Feedback.** Every required field is checked before saving. Errors are specific to the field that failed. A confirmation message appears after every add, update or delete. An empty state message shows when there are no dishes yet.
 
-Improve the user experience: validation is performed on all required fields, appropriate error messages are shown when validation fails, a confirmation message is shown once an item has been added, updated or deleted, and a message is shown when no menu items have been added yet.
-
-Navigation between the Home, Menu, Search and Statistics tabs, and the Add Item and Edit Item screens nested within the Menu tab, is handled using React Navigation (React Navigation, 2026).
+**Adaptive Light and Dark Appearance.** The app follows the phone's system appearance. There is no in-app toggle. Colours, the splash screen and the status bar all adjust automatically.
 
 ## Technology Stack
 
-Expo SDK 58 (Expo, 2026)
-React 19.3.0 and React Native 0.88.1 (Meta Platforms, Inc., 2026)
-React Navigation, used for the tab bar and stack navigation (React Navigation, 2026)
-React Native Safe Area Context, used to correctly handle device safe areas (React Native Community, 2026)
-Expo Vector Icons, used for the tab bar icons (Expo, 2026)
-Expo Font, used to load DM Sans and Source Sans 3 locally for consistent cross-platform typography (Expo, 2026)
+| Technology | Version | Purpose |
+|---|---|---|
+| Expo | ~58.0.23 (SDK 58) | Build and development tooling |
+| React | 19.3.0 | UI library |
+| React Native | 0.88.1 | Mobile runtime |
+| React Navigation (`native`, `native-stack`, `bottom-tabs`) | ^7.5.1 / ^7.21.0 / ^7.21.0 | Tab bar and stack navigation |
+| React Native Screens | ~4.30.1 | Native screens used by React Navigation |
+| React Native Safe Area Context | ~5.11.1 | Keeps content clear of notches and system bars |
+| React Context (React core API) | — | Shares menu data across screens |
+| Expo Font | ~58.0.11 | Loads local fonts at startup |
+| Expo Splash Screen | ~58.0.13 | Controls the splash screen and its fade-out |
+| Expo Status Bar | ~58.0.4 | Sets the status bar icon colour |
+| Expo Vector Icons | ^15.1.1 | Tab bar icons |
+
+A `tsconfig.json` and the `typescript` / `@types/react` devDependencies are in the project for editor type checking. The app's source files are plain JavaScript (`.js`), not TypeScript.
+
+## Application Architecture
+
+PlateEasy is built from small, reusable pieces instead of each screen styling its own buttons and cards.
+
+**Shared state.** `context/MenuContext.js` holds the menu list and the add, update and delete functions in a React Context. Any screen can read or change the menu through `useMenu()`. The list lives in component state (`useState`), so it is not saved between app sessions. See Project Scope and Limitations.
+
+**Navigation.** `App.js` sets up a bottom tab bar with four tabs: Home, Menu, Search and Statistics. The Menu tab has its own stack, so Add Item and Edit Item can be opened from the list and closed back to it. Screen colours follow the active light/dark theme.
+
+**Centralised styling.** `constants/theme.js` holds all colour, type, spacing and radius values. Every screen reads the active theme through `useAppTheme()` (`hooks/useAppTheme.js`). Since `StyleSheet.create()` doesn't update on its own, each screen builds its styles in a `createStyles(colors)` function called with `useMemo`. This way, styles update when the theme changes.
+
+**Reusable components.** `components/AppButton.js`, `components/ChipSelector.js`, `components/DishCard.js` and `components/CourseDot.js` are shared across screens:
+
+- `AppButton`: one button component with four variants (action, nav, ghost, destructive), a 52px minimum touch target, and a loading state.
+- `ChipSelector`: a row of selectable chips, used for the course picker on the forms and the course filter on Search.
+- `DishCard`: one dish row, used on the Menu list and in Search results.
+- `CourseDot`: a small coloured dot for a dish's course, used in `DishCard`, `ChipSelector`, the Home dashboard and the Statistics chart.
+
+**Startup.** `App.js` keeps the splash screen visible while the local fonts load with `useFonts()`. Once loading finishes, the splash fades out and the app renders. This avoids a flash of the wrong font.
 
 ## Design System
 
-The app's colour palette, typography, spacing and corner-radius values are centralised in `constants/theme.js` as a single source of truth, rather than each screen hard-coding its own values. The palette is deliberately restricted to five colours — Black, Carrot Orange, Dim Grey, White and Cornflower Ocean — each limited to exactly one functional role (for example, Carrot Orange is used only for Add/Save actions, and Cornflower Ocean only for navigation and selected states), following the general UI colour theory principle that a small, purposeful palette with a clear 60-30-10 distribution across background, secondary and accent colours reads as more deliberate and readable than one colour used inconsistently for several different purposes (freeCodeCamp, 2026).
+The interface uses a small colour palette, two font families, and a fixed set of spacing and radius values, all defined in `constants/theme.js`. Each value has a light and dark version where needed, so the app follows the phone's system appearance.
 
-Typography uses DM Sans for screen titles and section headings and Source Sans 3 for all other text (dish names, prices, buttons and labels), both loaded as local font files via Expo Font rather than relying on the operating system's default typeface, so the brand typography is identical on iOS and Android (Google, 2026a; Google, 2026c).
+### Colour Palette
 
-Touch target sizing (a 52px minimum button height), spacing and the use of shadow versus Android elevation for card surfaces were checked against the touch-target and layout guidance in Apple's Human Interface Guidelines (Apple Inc., 2026) and Google's Material Design 3 (Google, 2026b), and colour contrast between text and its background was checked against the Web Content Accessibility Guidelines (W3C, 2026) minimum contrast ratios.
+| Colour | Light mode | Dark mode | Role |
+|---|---|---|---|
+| Black / White | Text `#000000`; background and surface `#FFFFFF` | Text `#F2F2F2`; background `#121212`; surface `#1E1E1E` | Text, background and card surfaces |
+| Dim Grey | `#686E6E` | `#9BA3A3` | Secondary text and labels |
+| Carrot Orange | `#F7993C` | `#F7993C` | Add / Save actions only |
+| Cornflower Ocean | `#166990` | `#4FB3D9` | Navigation and selected states only |
+| Destructive Red | `#C0392B` | `#C0392B` | Delete actions only |
+
+Each brand colour has one job. Carrot Orange is only used for Add/Save. Cornflower Ocean is only used for navigation and selection. A small, purposeful palette reads as more deliberate than one colour reused for several things (freeCodeCamp, 2026).
+
+**Course colours.** Each course has its own colour, shown as a small dot on dish cards, chips, the Home dashboard and the Statistics chart:
+
+| Course | Light mode | Dark mode |
+|---|---|---|
+| Starter (Chartreuse) | `#809306` | `#DEF73B` |
+| Main Course (Teal) | `#2DAAAA` | `#2DAAAA` |
+| Dessert (Magenta) | `#8F156C` | `#D742AC` |
+
+Some course colours change between light and dark mode. The hue stays the same; only the lightness changes, so the colour still meets WCAG 2.2 contrast guidelines (W3C, 2026) against its background. Starter's chartreuse, for example, is darkened for light mode and used at full brightness in dark mode.
+
+### Typography
+
+Typography uses two local fonts, loaded with Expo Font so the type looks the same on iOS and Android (Google, 2026a; Google, 2026c):
+
+| Role | Font | Weight | Size |
+|---|---|---|---|
+| Screen titles | DM Sans | SemiBold | 24px |
+| Section headings | DM Sans | SemiBold | 18px |
+| Dish names | Source Sans 3 | Medium | 16px |
+| Prices | Source Sans 3 | SemiBold | 16px |
+| Body text | Source Sans 3 | Regular | 14px |
+| Secondary body text | Source Sans 3 | Regular | 14px |
+| Button labels | Source Sans 3 | Medium | 15px |
+| Labels | Source Sans 3 | Regular | 12px |
+
+A DM Sans Medium file is also loaded but not currently used.
+
+### Spacing, Radius and Components
+
+Cards and buttons use a 14px corner radius. Input fields use 12px. Spacing follows a fixed scale: 4, 8, 14, 18 and 22px. Card surfaces use a soft shadow on iOS and native elevation on Android.
+
+### Accessibility Considerations
+
+Colour contrast is checked against WCAG 2.2 (W3C, 2026), which is why some colours have a separate dark-mode value. Buttons have a 52px minimum touch target, based on Apple's Human Interface Guidelines (Apple Inc., 2026) and Google's Material Design 3 (Google, 2026b). The app follows the phone's system light/dark setting automatically, using React Native's `useColorScheme()` (Meta Platforms, Inc., 2026).
 
 ## Project Structure
 
-App.js sets up navigation (React Navigation, 2026), including the tab bar and the stack navigator used between the Home and Add Item screens, and loads the app's local fonts before rendering any screen.
-index.js is the Expo entry point.
-constants/theme.js holds the shared colour palette, type scale, spacing and shadow tokens used by every screen.
-components/AppButton.js, components/ChipSelector.js and components/DishCard.js are reusable UI components shared across multiple screens, instead of each screen styling its own button, course selector or list row.
-context/MenuContext.js holds the shared menu item state using React Context (Meta Platforms, Inc., 2026), so every screen can read and update it.
-screens/DashboardScreen.js is the Home tab: a greeting, item counts per course, and shortcuts into the Menu and Add Item screens.
-screens/HomeScreen.js displays the list of menu items, the empty state message, and the button used to add a new item.
-screens/AddItemScreen.js and screens/EditItemScreen.js contain the forms used to capture or update a menu item, including validation and success feedback; EditItemScreen.js also handles deleting the item.
-screens/SearchScreen.js lets the chef search the menu by dish name and filter it by course, with results that open directly on the Edit screen.
-screens/StatisticsScreen.js shows total items, average price, the most and least expensive dish, and a bar chart of items per course with each course's own average price.
+```
+PlateEasy_Menu_Manager/
+├── App.js
+├── app.json
+├── index.js
+├── package.json
+├── tsconfig.json
+├── assets/
+│   ├── fonts/
+│   │   ├── DMSans-Medium.ttf
+│   │   ├── DMSans-SemiBold.ttf
+│   │   ├── SourceSans3-Medium.ttf
+│   │   ├── SourceSans3-Regular.ttf
+│   │   └── SourceSans3-SemiBold.ttf
+│   ├── icon.png, favicon.png, splash-icon.png, splash-logo.png, logo-mark.png
+│   └── android-icon-background.png, android-icon-foreground.png, android-icon-monochrome.png
+├── components/
+│   ├── AppButton.js
+│   ├── ChipSelector.js
+│   ├── CourseDot.js
+│   └── DishCard.js
+├── constants/
+│   └── theme.js
+├── context/
+│   └── MenuContext.js
+├── hooks/
+│   └── useAppTheme.js
+└── screens/
+    ├── DashboardScreen.js
+    ├── HomeScreen.js
+    ├── AddItemScreen.js
+    ├── EditItemScreen.js
+    ├── SearchScreen.js
+    └── StatisticsScreen.js
+```
 
-## How to Run
+**App.js** sets up navigation, loads the local fonts, and controls the splash screen.
+**index.js** is the Expo entry point.
+**constants/theme.js** holds the colour, type, spacing and shadow values.
+**context/MenuContext.js** holds the menu list and its CRUD functions.
+**hooks/useAppTheme.js** resolves the system colour scheme to the app's palette.
+**components/** holds the four reusable components listed above.
 
-Install dependencies with npm install.
-Start the development server with npx expo start (Expo, 2026).
-Open the Expo Go app on a physical device and scan the QR code shown in the terminal, or press i for the iOS simulator or a for the Android emulator.
+**Screens:**
 
-## Scope and Limitations
+- `screens/DashboardScreen.js`: Home tab. Greeting, per-course dish counts, and shortcuts.
+- `screens/HomeScreen.js`: Menu tab list. All dishes, the empty state, and the add button.
+- `screens/AddItemScreen.js`: form to add a dish, with field validation.
+- `screens/EditItemScreen.js`: form to edit a dish, same validation, plus delete.
+- `screens/SearchScreen.js`: search by name and filter by course, results open on Edit.
+- `screens/StatisticsScreen.js`: totals, averages, most/least expensive dish, bar chart.
 
-This version of the app (the Final POE) covers the full set of requirement areas.
+## Installation and Setup
 
-Build the user interface: the app is built from appropriate React Native components (Meta Platforms, Inc., 2026), with a clear application title, readable text, consistent spacing and alignment, and a simple layout based on the Part 1 wireframes.
+**Prerequisites:**
 
-Capture menu information: the chef can enter a dish name, a description, a course, and a price, using an input component suited to each type of data.
+- Node.js and npm
+- The Expo Go app for a physical device, or an iOS Simulator / Android Emulator
 
-Display menu items: the chef can add multiple menu items, view all items that have been added, and the displayed list updates automatically whenever a new item is added, without needing to manually refresh the screen.
+**Steps:**
 
-Manage menu items: the chef can open any existing menu item from the Menu tab, edit its details using the same validation as the Add Item screen, or delete it after confirming the action, so the menu can be corrected without starting over.
+```bash
+npm install
+npx expo start
+```
 
-Search and filter menu items: the chef can search the menu by dish name and filter the results by course from the Search tab; tapping a result opens it directly on the Edit screen.
+With the server running, scan the QR code in Expo Go on a physical device, or press `i` for the iOS Simulator or `a` for the Android Emulator.
 
-Display menu statistics: the Statistics tab shows the total number of menu items, the average price across the whole menu, the most and least expensive dish, and a bar chart showing how many items — and their average price — belong to each course.
+## Project Scope and Limitations
 
-Improve the user experience: required fields are validated before an item is saved, specific error messages are shown for each field that fails validation (including a check that the price is a valid number greater than zero), a confirmation message is shown once an item has been added, updated or deleted, and a message is shown on the Home screen when no menu items have been added yet.
+PlateEasy supports the full menu workflow: add, view, edit, delete, search, filter and review statistics. No login or setup is needed.
 
-## Change Log
+A few technical limitations come from the current implementation:
+
+- **No persistent storage.** The menu lives in React state (`useState`), not device storage. It resets when the app restarts.
+- **No backend or sync.** Each install has its own local menu. There is no server or account system.
+- **Text-only dishes.** No photo or image field.
+- **No automated tests.** The project has no unit or integration tests.
+- **Touch feedback.** Buttons use `TouchableOpacity`'s opacity change, not Android's native ripple effect.
+- **Fixed currency.** Prices use South African Rand (R) only.
+
+## Development History
 
 - 2026-11-04 — Kabelo Litheko — Added edit and delete functionality for menu items (Manage Menu Items).
 - 2026-11-04 — Kabelo Litheko — Built out the Statistics screen: total menu items, average price, and items per course (Display Menu Statistics).
