@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import * as SplashScreen from 'expo-splash-screen';
+import { useFonts } from 'expo-font';
 import { MenuProvider } from './context/MenuContext';
+import useAppTheme from './hooks/useAppTheme';
 
 import DashboardScreen from './screens/DashboardScreen';
 import HomeScreen from './screens/HomeScreen';
@@ -13,6 +16,16 @@ import AddItemScreen from './screens/AddItemScreen';
 import EditItemScreen from './screens/EditItemScreen';
 import SearchScreen from './screens/SearchScreen';
 import StatisticsScreen from './screens/StatisticsScreen';
+
+// Keep the native splash screen up until DM Sans / Source Sans 3 have
+// finished loading below, so the chef never sees a flash of the system
+// font swap to the real one a moment later.
+SplashScreen.preventAutoHideAsync();
+
+// Fade the splash logo out instead of it just vanishing the instant the
+// app is ready — a soft transition into the Home screen rather than an
+// abrupt cut.
+SplashScreen.setOptions({ duration: 400, fade: true });
 
 // This app uses two kinds of navigation.
 // A stack navigator lets you move forward to a new screen and back again,
@@ -38,6 +51,49 @@ function MenuStack() {
 // App is the very first component that runs. Everything else on screen
 // is drawn inside this one.
 export default function App() {
+  // Local fonts — DM Sans for headings, Source Sans 3 for everything
+  // else. The keys here are the exact fontFamily names used throughout
+  // the app (see constants/theme.js FONTS).
+  const [fontsLoaded, fontError] = useFonts({
+    'DMSans-Medium': require('./assets/fonts/DMSans-Medium.ttf'),
+    'DMSans-SemiBold': require('./assets/fonts/DMSans-SemiBold.ttf'),
+    'SourceSans3-Regular': require('./assets/fonts/SourceSans3-Regular.ttf'),
+    'SourceSans3-Medium': require('./assets/fonts/SourceSans3-Medium.ttf'),
+    'SourceSans3-SemiBold': require('./assets/fonts/SourceSans3-SemiBold.ttf'),
+  });
+
+  // Follows the phone's system light/dark setting — no in-app toggle, by
+  // design (see hooks/useAppTheme.js).
+  const { scheme, colors } = useAppTheme();
+
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  // Render nothing (the native splash screen is still showing) until the
+  // fonts are ready or have failed — never show the app with the wrong
+  // typeface for a moment.
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
+
+  // React Navigation's own light/dark themes control the colour of the
+  // space behind/around screens during transitions, independently of
+  // our own screen backgrounds.
+  const navigationTheme = {
+    ...(scheme === 'dark' ? DarkTheme : DefaultTheme),
+    colors: {
+      ...(scheme === 'dark' ? DarkTheme.colors : DefaultTheme.colors),
+      background: colors.background,
+      card: colors.surface,
+      border: colors.border,
+      text: colors.textPrimary,
+      primary: colors.blue,
+    },
+  };
+
   return (
     // SafeAreaProvider tells the rest of the app how much space to leave
     // at the top and bottom of the screen, so content does not get hidden
@@ -52,12 +108,17 @@ export default function App() {
       <MenuProvider>
         {/* NavigationContainer has to wrap all the navigation in the app.
             It keeps track of which screen is currently showing. */}
-        <NavigationContainer>
+        <NavigationContainer theme={navigationTheme}>
           <Tab.Navigator
             screenOptions={{
               headerShown: false, // do not show the default title bar at the top of each screen
-              tabBarActiveTintColor: '#D9782D', // colour used for the tab that is currently selected
-              tabBarInactiveTintColor: '#999', // colour used for tabs that are not selected
+              // Cornflower Ocean is reserved for navigation and selected
+              // elements only, per the design brief — so it's the active
+              // tab colour and nothing else in the tab bar.
+              tabBarActiveTintColor: colors.blue,
+              tabBarInactiveTintColor: colors.textSecondary,
+              tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
+              tabBarLabelStyle: { fontFamily: 'SourceSans3-Regular', fontSize: 11 },
             }}
           >
             {/* First tab: Home. A simple dashboard — a greeting, the
@@ -119,8 +180,10 @@ export default function App() {
               }}
             />
           </Tab.Navigator>
-          {/* Sets the colour of the clock/battery icons at the very top of the phone screen */}
-          <StatusBar style="dark" />
+          {/* Light icons (clock/battery) on a dark screen, dark icons on
+              a light screen — follows the same system scheme as
+              everything else. */}
+          <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
         </NavigationContainer>
       </MenuProvider>
     </SafeAreaProvider>
